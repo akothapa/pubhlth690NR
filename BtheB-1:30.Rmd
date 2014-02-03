@@ -1,0 +1,25 @@
+BtheB Analysis
+========================================================
+```
+1)
+  BtheB is the dataset culminating from a clinical trial of "Beat the Blues," a computer program designed to deliver cognitive behavioral therapy. For the purposes of this clinical trial, 100 patients suffering from depression were randomly assigned to treatment as usual (TAU) or Beat the Blues (BtB) to determine which program was more effective. Effectiveness was measured using Beck Depression Inventory scores, which were regularly taken over the course of 6 months, to determine if depression worsened or lessened. 100 observations were taken, and 8 variables were measured - whether the patient was using anti-depressants, length of depression (less than or more than 6 months), treatment group (TAU or BtheB), and Beck Inventory Scores to mark severity of depression (BDI) pre-treatment as well as after 1 months, 2 months, 3 months and 6 months.
+```
+2) For our analysis, we chose to use BDI scores before (bdi.pre) the study and the scores after 3 months (bdi.5m). We wish to see if there is a significant overall change in BDI scores after 3 months, which would be evidenced by a statistically significant difference in bdi.pre and bdi.5m. Furthermore, we wish to test our hypothesis that BtheB is more effective than TAU for treating patients with depression, specifically those who have been suffering from more severe depression (determined by higher bdi.pre).
+
+```{r}
+library(HSAUR2)
+library(ggplot2)
+summary(BtheB)
+```
+```{r}
+summary(BtheB$bdi.pre)
+summary(BtheB$bdi.5m)
+```
+
+3) Missing data is generally present in form of NAs in BDI scores, particularly after 2 months and especially after 3 months. As there are 42 NAs at the 3 month point (bdi.5m), and the total sample size was only 100 patients, we are concerned about the missingness in data impacting our analysis. However, we hope that impact of the NAs on the dataset will be minimized by the fact that the subjects were all stratified by antidepressant use, length of depression, and randomly assigned to TAU or BtheB treatment groups. 
+
+4) The regression model follows:
+```{r fig.width=7, fig.height=6}
+qplot(bdi.pre, bdi.5m, data=BtheB, geom=c("point", "smooth"),method="lm") + facet_grid(.~ treatment) + theme_bw()
+```
+Both TAU and BtheB treatment plots display a positive correlation between BDI pre-treatment scores and BDI scores after 3 months. However, the BtheB group seems to display a stronger correlation, evidenced by more constant variation and lower residuals. Looking at summary statistics of bdi.pre and bdi.5m, particularly the mean BDI scores, shows an overall decrease in BDI scores, signifying a reduction in severity of depression for both treatment groups. However, for more severity depression (where BDI pre-treatment scores are higher), BtheB treatment appears more effective in reducing BDI score than TAU treatment does. This difference is evidenced by the "steeper" (more change along X, less change along Y) slope in the BtheB treatment group plot.
